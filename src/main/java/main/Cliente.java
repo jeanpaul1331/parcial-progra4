@@ -9,6 +9,10 @@ class Cliente {
         this.nombre = nombre;
     }
 
+    public String getIdCliente() {
+        return idCliente;
+    }
+
     public String getNombre() {
         return nombre;
     }
