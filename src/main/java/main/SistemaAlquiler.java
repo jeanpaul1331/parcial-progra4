@@ -181,6 +181,74 @@ public class SistemaAlquiler {
             }
         }
     }
+    public void clienteMenu(Scanner scanner) {
+        while (true) {
+            System.out.println("\n--- Menú Cliente ---");
+            System.out.println("1. Ver Vehículos Disponibles");
+            System.out.println("2. Reservar Vehículo");
+            System.out.println("3. Salir");
+            System.out.print("Seleccione una opción: ");
+
+            int opcion = 0;
+            try {
+                opcion = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("ENTRADA INVALIDA, INGRESA UN NUMERO");
+                continue;
+            }
+
+            switch (opcion) {
+                case 1:
+                    verVehiculosDisponibles();
+                    break;
+                case 2:
+                    realizarReserva(scanner);
+                    break;
+                case 3:
+                    System.out.println("SALIENDO DEL MENU CLIENTE,,,.,.,.,.,.,,.,,.,..,,.,.");
+                    return;
+                default:
+                    System.out.println("ESTA OPCION NO ES VALIDA. ");
+            }
+        }
+    }
+    private void realizarReserva(Scanner scanner) {
+        System.out.print("Ingrese ID del Cliente: ");
+        String idCliente = scanner.nextLine().trim();
+        Cliente cliente = DataStore.clientes.stream()
+                .filter(c -> c.getIdCliente().equals(idCliente))
+                .findFirst()
+                .orElse(null);
+    
+        if (cliente == null) {
+            System.out.println("Cliente no encontrado.");
+            return;
+        }
+    
+        System.out.print("Ingrese ID del Vehículo: ");
+        String idVehiculo = scanner.nextLine().trim();
+        Vehiculo vehiculo = DataStore.flotaVehiculos.stream()
+                .filter(v -> v.getIdVehiculo().equals(idVehiculo) && v.isDisponible())
+                .findFirst()
+                .orElse(null);
+    
+        if (vehiculo == null) {
+            System.out.println("Vehículo no disponible o no encontrado.");
+            return;
+        }
+    
+        System.out.print("Ingrese Fecha de Inicio (YYYY-MM-DD): ");
+        LocalDate fechaInicio = LocalDate.parse(scanner.nextLine().trim());
+        System.out.print("Ingrese Fecha de Fin (YYYY-MM-DD): ");
+        LocalDate fechaFin = LocalDate.parse(scanner.nextLine().trim());
+        
+        System.out.print("¿Desea añadir seguro? (true/false): ");
+        boolean seguro = Boolean.parseBoolean(scanner.nextLine().trim());
+        System.out.print("¿Desea añadir GPS? (true/false): ");
+        boolean gps = Boolean.parseBoolean(scanner.nextLine().trim());
+    
+        cliente.reservarVehiculo(vehiculo, fechaInicio, fechaFin, seguro, gps);
+    }
 
     public static void main(String[] args) {
         SistemaAlquiler sistema = new SistemaAlquiler();
